@@ -1,0 +1,11 @@
+[package]
+name="racemus_client"
+version="0.1.0"
+
+[dependencies]
+amethyst = { git = "https://github.com/codedjinn/amethyst", branch = "master" }
+
+[features]
+default = ["vulkan"]
+metal = ["amethyst/metal"]
+vulkan = ["amethyst/vulkan"]
