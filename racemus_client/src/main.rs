@@ -1,55 +1,56 @@
-//! Opens an empty window.
+mod pong;
+mod systems;
 
 extern crate amethyst;
 
-use amethyst::prelude::*;
-use amethyst::window::DisplayConfig;
-use amethyst::renderer::plugins::RenderFlat2D;
+use crate::pong::Pong;
 
-use amethyst::utils::application_root_dir;
-
-struct Pong;
-
-impl SimpleState for Pong {
-}
-
-const APP_ROOT : &str = "c:\\dev\\learn_rust\\racemus_client";
+use amethyst::{
+    core::TransformBundle,
+    prelude::*,
+    input::{
+        InputBundle,
+        StringBindings
+    },
+    renderer::{
+        plugins::{RenderFlat2D, RenderToWindow},
+        types::DefaultBackend,
+        RenderingBundle,
+    },
+    utils::application_root_dir,
+};
 
 fn main() -> amethyst::Result<()> {
+
     amethyst::start_logger(Default::default());
 
-    // need to figure out why methods are prepending \\?
-    let app_root = application_root_dir()?;
-    let display_config_path = app_root.join("config\\display.ron");
-    let assets_dir = app_root.join("assets\\");
+    let config_dir = "./config/display.ron";
+    let binding_dir = "./config/bindings.ron";
+    let assets_dir = "./assets";
 
-    //let path = format!("{}/config/display.ron", application_root_dir());
-    let config = DisplayConfig::load("c:\\dev\learn_rust\\racemus_client\\src\\config\\display.ron");
-
-    let pipe = Pipeline::build()
-        .with_stage(
-            Stage::with_backbuffer()
-            .clear_target([0.39, 0.58, 0.92, 1.0], 1.0)
-            .with_pass(DrawFlat2D::new())
-        );
+    let input_bundle = InputBundle::<StringBindings>::new()
+        .with_bindings_from_file(binding_dir)?;
 
     let game_data = GameDataBuilder::default()
+        .with_bundle(TransformBundle::new())?
+        .with_bundle(input_bundle)?
         .with_bundle(
-            RenderBundle::new(pipe ,Some(config))
-                .with_sprite_sheet_processor()
-        )?;
+            RenderingBundle::<DefaultBackend>::new()
+                // The RenderToWindow plugin provides all the scaffolding for opening a window and drawing on it
+                .with_plugin(
+                    RenderToWindow::from_config_path(config_dir)?
+                        .with_clear([0.0, 0.0, 0.0, 1.0]),
+                )
+                // RenderFlat2D plugin is used to render entities with a `SpriteRender` component.
+                .with_plugin(RenderFlat2D::default()),
+        )?
+        .with(systems::PaddleSystem, "paddle_system", &["input_system"])
+        .with(systems::MoveBallsSystem, "ball_system", &[])
+        .with(systems::BounceSystem, "collision_system", &["paddle_system", "ball_system"]);
 
-    let mut game = Application::new("./", Pong, game_data)?;
+    let mut world = World::new();
+    let mut game = Application::new(assets_dir, pong::Pong, game_data)?;
     game.run();
-    // let app_root = String::from("c:\\dev\\learn_rust\\racemus_client\\target\\debug");
-    // let display_config_path = "c:\\dev\\learn_rust\\racemus_client\\target\\debug\\config\\display.ron";
-    // let assets_dir = "c:\\dev\\learn_rust\\racemus_client\\target\\debug\\";
-
-    // let game_data = GameDataBuilder::default()
-    //     .with_bundle(WindowBundle::from_config_path(display_config_path)?)?;
-
-    // let mut game = Application::new(assets_dir, SimpleState, game_data)?;
-    // game.run();
 
     Ok(())
 }
