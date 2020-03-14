@@ -33,8 +33,8 @@ impl App {
             for i in 0..self.game.cells.len() {
                 let cell = self.game.cells[i];
 
-                let px = (cell.x * game::CELL_SIZE) as f64;
-                let py = (cell.y * game::CELL_SIZE) as f64;
+                let px = cell.x * game::CELL_SIZE;
+                let py = cell.y * game::CELL_SIZE;
 
                 let transform = c
                         .transform

@@ -20,6 +20,7 @@ use amethyst::{
     utils::{scene::BasicScenePrefab}
 };
 
+type MyPrefabData = BasicScenePrefab<(Vec<Position>, Vec<Normal>, Vec<TexCoord>)>;
 
 fn main() -> amethyst::Result<()> {
 
@@ -29,12 +30,13 @@ fn main() -> amethyst::Result<()> {
     let assets_dir = "./assets";
 
     let game_data = GameDataBuilder::default()
+        .with_system_desc(PrefabLoaderSystemDesc::<MyPrefabData>::default(), "", &[])
         .with_bundle(TransformBundle::new())?
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()
                 .with_plugin(
                     RenderToWindow::from_config_path(display_config)?
-                        .with_clear([0.0, 0.0, 0.0, 1.0])
+                        .with_clear([0.38, 0.58, 0.98, 1.0])
                 )
                 .with_plugin(RenderShaded3D::default())
         )?;

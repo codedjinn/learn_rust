@@ -1,0 +1,33 @@
+Prefab (
+    entities: [
+        (
+            data: (
+                graphics: (
+                    mesh: Asset(File("mesh/cube.obj", ("OBJ", ()))),
+                    material: (
+                        albedo: File("texture/grass.jpg", (
+                            "IMAGE", (
+                                sample_info: (
+                                    min_filter: Linear,
+                                    mag_filter: Linear,
+                                    mip_filter: Linear,
+                                    wrap_mode: (Tile, Tile, Tile),
+                                    lod_bias: ( 0 ),
+                                    lod_range: (
+                                        start: ( 0 ),
+                                        end: ( 8000 )
+                                    ),
+                                    comparison: None,
+                                    border: ( 0 ),
+                                    normalized: true,
+                                    anisotropic: On(8)
+                                )
+                            )
+                        ))
+                    ),
+                ),
+                transform: 
+            )
+        )
+    ]
+)

@@ -4,7 +4,7 @@ version="0.1.0"
 edition = "2018"
 
 [dependencies]
-amethyst = { git = "https://github.com/codedjinn/amethyst", branch = "master" }
+amethyst = { git = "https://github.com/amethyst/amethyst", branch = "master" }
 
 [features]
 default = ["vulkan"]
